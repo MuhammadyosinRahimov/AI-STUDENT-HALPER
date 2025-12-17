@@ -1,6 +1,9 @@
 # Dependencies
 /node_modules
 /.pnp
+/.env
+/.env.local
+
 .pnp.js
 .yarn/install-state.gz
 
@@ -9,9 +12,7 @@
 out/
 
 # Environment variables
-/.env
-/.env.local
-/.env*.local
+
 
 # Database (legacy)
 /data/*.db
