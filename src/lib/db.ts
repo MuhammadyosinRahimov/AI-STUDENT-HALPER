@@ -1,16 +1,4 @@
-import Database from 'better-sqlite3';
-import path from 'path';
-import fs from 'fs';
-
-const DB_PATH = path.join(process.cwd(), 'data', 'app.db');
-
-function getDb(): Database.Database {
-  const dir = path.dirname(DB_PATH);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-  return new Database(DB_PATH);
-}
+import { sql } from '@vercel/postgres';
 
 export interface Generation {
   id: number;
@@ -24,25 +12,23 @@ export interface Generation {
   created_at: string;
 }
 
-export function initDB(): void {
-  const db = getDb();
-  db.exec(`
+export async function initDB(): Promise<void> {
+  await sql`
     CREATE TABLE IF NOT EXISTS generations (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       type TEXT NOT NULL,
       topic TEXT NOT NULL,
       subject TEXT NOT NULL,
       pages INTEGER NOT NULL,
       additional_info TEXT,
       content TEXT NOT NULL,
-      pdf_data BLOB,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      pdf_data BYTEA,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
-  `);
-  db.close();
+  `;
 }
 
-export function saveGeneration(data: {
+export async function saveGeneration(data: {
   type: string;
   topic: string;
   subject: string;
@@ -50,48 +36,68 @@ export function saveGeneration(data: {
   additionalInfo?: string;
   content: string;
   pdfBuffer: Buffer;
-}): { id: number } {
-  const db = getDb();
-  const stmt = db.prepare(`
+}): Promise<{ id: number }> {
+  // Ensure table exists
+  await initDB();
+  
+  const pdfBase64 = data.pdfBuffer.toString('base64');
+  
+  const result = await sql`
     INSERT INTO generations (type, topic, subject, pages, additional_info, content, pdf_data)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `);
-  const result = stmt.run(
-    data.type,
-    data.topic,
-    data.subject,
-    data.pages,
-    data.additionalInfo || null,
-    data.content,
-    data.pdfBuffer
-  );
-  db.close();
-  return { id: result.lastInsertRowid as number };
+    VALUES (
+      ${data.type},
+      ${data.topic},
+      ${data.subject},
+      ${data.pages},
+      ${data.additionalInfo || null},
+      ${data.content},
+      decode(${pdfBase64}, 'base64')
+    )
+    RETURNING id
+  `;
+  
+  return { id: result.rows[0].id };
 }
 
-export function getHistory(): Omit<Generation, 'content' | 'pdf_data'>[] {
-  const db = getDb();
-  const rows = db.prepare(`
+export async function getHistory(): Promise<Omit<Generation, 'content' | 'pdf_data'>[]> {
+  await initDB();
+  
+  const result = await sql`
     SELECT id, type, topic, subject, pages, additional_info, created_at
-    FROM generations ORDER BY created_at DESC LIMIT 50
-  `).all() as Omit<Generation, 'content' | 'pdf_data'>[];
-  db.close();
-  return rows;
+    FROM generations 
+    ORDER BY created_at DESC 
+    LIMIT 50
+  `;
+  
+  return result.rows as Omit<Generation, 'content' | 'pdf_data'>[];
 }
 
-export function getById(id: number): Generation | null {
-  const db = getDb();
-  const row = db.prepare('SELECT * FROM generations WHERE id = ?').get(id) as Generation | undefined;
-  db.close();
-  return row || null;
+export async function getById(id: number): Promise<Generation | null> {
+  await initDB();
+  
+  const result = await sql`
+    SELECT id, type, topic, subject, pages, additional_info, content, 
+           encode(pdf_data, 'base64') as pdf_data, created_at
+    FROM generations 
+    WHERE id = ${id}
+  `;
+  
+  if (result.rows.length === 0) return null;
+  
+  const row = result.rows[0];
+  return {
+    ...row,
+    pdf_data: row.pdf_data ? Buffer.from(row.pdf_data, 'base64') : null,
+  } as Generation;
 }
 
-export function deleteById(id: number): boolean {
-  const db = getDb();
-  const result = db.prepare('DELETE FROM generations WHERE id = ?').run(id);
-  db.close();
-  return result.changes > 0;
+export async function deleteById(id: number): Promise<boolean> {
+  await initDB();
+  
+  const result = await sql`
+    DELETE FROM generations 
+    WHERE id = ${id}
+  `;
+  
+  return (result.rowCount ?? 0) > 0;
 }
-
-// Initialize on import
-initDB();

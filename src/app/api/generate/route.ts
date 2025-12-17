@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
       pdfBuffer = await generatePresentationPdf(slides, topic, subject);
     }
 
-    const saved = saveGeneration({
+    const saved = await saveGeneration({
       type,
       topic,
       subject,

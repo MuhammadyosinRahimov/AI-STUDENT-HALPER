@@ -7,7 +7,7 @@ export async function GET(
 ) {
   try {
     const id = parseInt(params.id);
-    const record = getById(id);
+    const record = await getById(id);
 
     if (!record) {
       return NextResponse.json({ error: 'Запись не найдена' }, { status: 404 });
@@ -38,7 +38,7 @@ export async function DELETE(
 ) {
   try {
     const id = parseInt(params.id);
-    const deleted = deleteById(id);
+    const deleted = await deleteById(id);
 
     if (!deleted) {
       return NextResponse.json({ error: 'Запись не найдена' }, { status: 404 });

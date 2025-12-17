@@ -1,4 +1,22 @@
+# Dependencies
 /node_modules
 /.pnp
 .pnp.js
 .yarn/install-state.gz
+
+# Next.js
+.next/
+out/
+
+# Environment variables
+.env
+.env.local
+.env*.local
+
+# Database (legacy)
+/data/*.db
+
+# Misc
+*.pem
+.DS_Store
+.vercel

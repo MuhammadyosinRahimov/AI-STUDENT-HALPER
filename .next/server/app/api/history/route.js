@@ -1,19 +1,38 @@
-"use strict";(()=>{var e={};e.id=533,e.ids=[533],e.modules={399:e=>{e.exports=require("next/dist/compiled/next-server/app-page.runtime.prod.js")},517:e=>{e.exports=require("next/dist/compiled/next-server/app-route.runtime.prod.js")},2048:e=>{e.exports=require("fs")},5315:e=>{e.exports=require("path")},8259:(e,t,r)=>{r.r(t),r.d(t,{originalPathname:()=>T,patchFetch:()=>R,requestAsyncStorage:()=>d,routeModule:()=>c,serverHooks:()=>E,staticGenerationAsyncStorage:()=>l});var n={};r.r(n),r.d(n,{GET:()=>u});var o=r(9303),i=r(8716),s=r(670),a=r(7070),p=r(4304);async function u(){try{let e=(0,p.s1)();return a.NextResponse.json(e)}catch(e){return console.error("History error:",e),a.NextResponse.json({error:"Ошибка получения истории"},{status:500})}}let c=new o.AppRouteRouteModule({definition:{kind:i.x.APP_ROUTE,page:"/api/history/route",pathname:"/api/history",filename:"route",bundlePath:"app/api/history/route"},resolvedPagePath:"C:\\Users\\Mardin it\\Desktop\\crs\\student-ai-nextjs\\src\\app\\api\\history\\route.ts",nextConfigOutput:"",userland:n}),{requestAsyncStorage:d,staticGenerationAsyncStorage:l,serverHooks:E}=c,T="/api/history/route";function R(){return(0,s.patchFetch)({serverHooks:E,staticGenerationAsyncStorage:l})}},4304:(e,t,r)=>{r.d(t,{Jp:()=>T,FO:()=>E,s1:()=>l,vq:()=>d});let n=require("better-sqlite3");var o=r.n(n),i=r(5315),s=r.n(i),a=r(2048),p=r.n(a);let u=s().join(process.cwd(),"data","app.db");function c(){let e=s().dirname(u);return p().existsSync(e)||p().mkdirSync(e,{recursive:!0}),new(o())(u)}function d(e){let t=c(),r=t.prepare(`
-    INSERT INTO generations (type, topic, subject, pages, additional_info, content, pdf_data)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `).run(e.type,e.topic,e.subject,e.pages,e.additionalInfo||null,e.content,e.pdfBuffer);return t.close(),{id:r.lastInsertRowid}}function l(){let e=c(),t=e.prepare(`
-    SELECT id, type, topic, subject, pages, additional_info, created_at
-    FROM generations ORDER BY created_at DESC LIMIT 50
-  `).all();return e.close(),t}function E(e){let t=c(),r=t.prepare("SELECT * FROM generations WHERE id = ?").get(e);return t.close(),r||null}function T(e){let t=c(),r=t.prepare("DELETE FROM generations WHERE id = ?").run(e);return t.close(),r.changes>0}!function(){let e=c();e.exec(`
+(()=>{var e={};e.id=533,e.ids=[533],e.modules={399:e=>{"use strict";e.exports=require("next/dist/compiled/next-server/app-page.runtime.prod.js")},517:e=>{"use strict";e.exports=require("next/dist/compiled/next-server/app-route.runtime.prod.js")},8893:e=>{"use strict";e.exports=require("buffer")},4770:e=>{"use strict";e.exports=require("crypto")},7702:e=>{"use strict";e.exports=require("events")},2048:e=>{"use strict";e.exports=require("fs")},2615:e=>{"use strict";e.exports=require("http")},8791:e=>{"use strict";e.exports=require("https")},8216:e=>{"use strict";e.exports=require("net")},9801:e=>{"use strict";e.exports=require("os")},5315:e=>{"use strict";e.exports=require("path")},6162:e=>{"use strict";e.exports=require("stream")},2452:e=>{"use strict";e.exports=require("tls")},7360:e=>{"use strict";e.exports=require("url")},1568:e=>{"use strict";e.exports=require("zlib")},3739:()=>{},8259:(e,t,r)=>{"use strict";r.r(t),r.d(t,{originalPathname:()=>f,patchFetch:()=>l,requestAsyncStorage:()=>d,routeModule:()=>c,serverHooks:()=>T,staticGenerationAsyncStorage:()=>E});var s={};r.r(s),r.d(s,{GET:()=>p});var i=r(9303),a=r(8716),o=r(670),n=r(7070),u=r(5748);async function p(){try{let e=await (0,u.s1)();return n.NextResponse.json(e)}catch(e){return console.error("History error:",e),n.NextResponse.json({error:"Ошибка получения истории"},{status:500})}}let c=new i.AppRouteRouteModule({definition:{kind:a.x.APP_ROUTE,page:"/api/history/route",pathname:"/api/history",filename:"route",bundlePath:"app/api/history/route"},resolvedPagePath:"C:\\Users\\Mardin it\\Desktop\\crs\\student-ai-nextjs\\src\\app\\api\\history\\route.ts",nextConfigOutput:"",userland:s}),{requestAsyncStorage:d,staticGenerationAsyncStorage:E,serverHooks:T}=c,f="/api/history/route";function l(){return(0,o.patchFetch)({serverHooks:T,staticGenerationAsyncStorage:E})}},5748:(e,t,r)=>{"use strict";r.d(t,{FO:()=>n,Jp:()=>u,s1:()=>o,vq:()=>a});var s=r(6923);async function i(){await (0,s.i6)`
     CREATE TABLE IF NOT EXISTS generations (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       type TEXT NOT NULL,
       topic TEXT NOT NULL,
       subject TEXT NOT NULL,
       pages INTEGER NOT NULL,
       additional_info TEXT,
       content TEXT NOT NULL,
-      pdf_data BLOB,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      pdf_data BYTEA,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
-  `),e.close()}()}};var t=require("../../../webpack-runtime.js");t.C(e);var r=e=>t(t.s=e),n=t.X(0,[276,972],()=>r(8259));module.exports=n})();
+  `}async function a(e){await i();let t=e.pdfBuffer.toString("base64");return{id:(await (0,s.i6)`
+    INSERT INTO generations (type, topic, subject, pages, additional_info, content, pdf_data)
+    VALUES (
+      ${e.type},
+      ${e.topic},
+      ${e.subject},
+      ${e.pages},
+      ${e.additionalInfo||null},
+      ${e.content},
+      decode(${t}, 'base64')
+    )
+    RETURNING id
+  `).rows[0].id}}async function o(){return await i(),(await (0,s.i6)`
+    SELECT id, type, topic, subject, pages, additional_info, created_at
+    FROM generations 
+    ORDER BY created_at DESC 
+    LIMIT 50
+  `).rows}async function n(e){await i();let t=await (0,s.i6)`
+    SELECT id, type, topic, subject, pages, additional_info, content, 
+           encode(pdf_data, 'base64') as pdf_data, created_at
+    FROM generations 
+    WHERE id = ${e}
+  `;if(0===t.rows.length)return null;let r=t.rows[0];return{...r,pdf_data:r.pdf_data?Buffer.from(r.pdf_data,"base64"):null}}async function u(e){return await i(),((await (0,s.i6)`
+    DELETE FROM generations 
+    WHERE id = ${e}
+  `).rowCount??0)>0}}};var t=require("../../../webpack-runtime.js");t.C(e);var r=e=>t(t.s=e),s=t.X(0,[276,972,923],()=>r(8259));module.exports=s})();

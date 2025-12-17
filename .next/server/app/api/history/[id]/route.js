@@ -1,19 +1,38 @@
-"use strict";(()=>{var e={};e.id=749,e.ids=[749],e.modules={399:e=>{e.exports=require("next/dist/compiled/next-server/app-page.runtime.prod.js")},517:e=>{e.exports=require("next/dist/compiled/next-server/app-route.runtime.prod.js")},2048:e=>{e.exports=require("fs")},5315:e=>{e.exports=require("path")},9862:(e,t,r)=>{r.r(t),r.d(t,{originalPathname:()=>f,patchFetch:()=>R,requestAsyncStorage:()=>l,routeModule:()=>c,serverHooks:()=>T,staticGenerationAsyncStorage:()=>E});var n={};r.r(n),r.d(n,{DELETE:()=>u,GET:()=>d});var s=r(9303),o=r(8716),a=r(670),i=r(7070),p=r(4304);async function d(e,{params:t}){try{let r=parseInt(t.id),n=(0,p.FO)(r);if(!n)return i.NextResponse.json({error:"Запись не найдена"},{status:404});let{searchParams:s}=new URL(e.url);if("pdf"===s.get("download")&&n.pdf_data){let e=new Uint8Array(n.pdf_data);return new i.NextResponse(e,{headers:{"Content-Type":"application/pdf","Content-Disposition":`attachment; filename="${n.type}_${n.id}.pdf"`}})}let{pdf_data:o,...a}=n;return i.NextResponse.json({...a,hasPdf:!!o})}catch(e){return console.error("Get by ID error:",e),i.NextResponse.json({error:"Ошибка получения записи"},{status:500})}}async function u(e,{params:t}){try{let e=parseInt(t.id);if(!(0,p.Jp)(e))return i.NextResponse.json({error:"Запись не найдена"},{status:404});return i.NextResponse.json({success:!0,message:"Запись удалена"})}catch(e){return console.error("Delete error:",e),i.NextResponse.json({error:"Ошибка удаления"},{status:500})}}let c=new s.AppRouteRouteModule({definition:{kind:o.x.APP_ROUTE,page:"/api/history/[id]/route",pathname:"/api/history/[id]",filename:"route",bundlePath:"app/api/history/[id]/route"},resolvedPagePath:"C:\\Users\\Mardin it\\Desktop\\crs\\student-ai-nextjs\\src\\app\\api\\history\\[id]\\route.ts",nextConfigOutput:"",userland:n}),{requestAsyncStorage:l,staticGenerationAsyncStorage:E,serverHooks:T}=c,f="/api/history/[id]/route";function R(){return(0,a.patchFetch)({serverHooks:T,staticGenerationAsyncStorage:E})}},4304:(e,t,r)=>{r.d(t,{Jp:()=>T,FO:()=>E,s1:()=>l,vq:()=>c});let n=require("better-sqlite3");var s=r.n(n),o=r(5315),a=r.n(o),i=r(2048),p=r.n(i);let d=a().join(process.cwd(),"data","app.db");function u(){let e=a().dirname(d);return p().existsSync(e)||p().mkdirSync(e,{recursive:!0}),new(s())(d)}function c(e){let t=u(),r=t.prepare(`
-    INSERT INTO generations (type, topic, subject, pages, additional_info, content, pdf_data)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `).run(e.type,e.topic,e.subject,e.pages,e.additionalInfo||null,e.content,e.pdfBuffer);return t.close(),{id:r.lastInsertRowid}}function l(){let e=u(),t=e.prepare(`
-    SELECT id, type, topic, subject, pages, additional_info, created_at
-    FROM generations ORDER BY created_at DESC LIMIT 50
-  `).all();return e.close(),t}function E(e){let t=u(),r=t.prepare("SELECT * FROM generations WHERE id = ?").get(e);return t.close(),r||null}function T(e){let t=u(),r=t.prepare("DELETE FROM generations WHERE id = ?").run(e);return t.close(),r.changes>0}!function(){let e=u();e.exec(`
+(()=>{var e={};e.id=749,e.ids=[749],e.modules={399:e=>{"use strict";e.exports=require("next/dist/compiled/next-server/app-page.runtime.prod.js")},517:e=>{"use strict";e.exports=require("next/dist/compiled/next-server/app-route.runtime.prod.js")},8893:e=>{"use strict";e.exports=require("buffer")},4770:e=>{"use strict";e.exports=require("crypto")},7702:e=>{"use strict";e.exports=require("events")},2048:e=>{"use strict";e.exports=require("fs")},2615:e=>{"use strict";e.exports=require("http")},8791:e=>{"use strict";e.exports=require("https")},8216:e=>{"use strict";e.exports=require("net")},9801:e=>{"use strict";e.exports=require("os")},5315:e=>{"use strict";e.exports=require("path")},6162:e=>{"use strict";e.exports=require("stream")},2452:e=>{"use strict";e.exports=require("tls")},7360:e=>{"use strict";e.exports=require("url")},1568:e=>{"use strict";e.exports=require("zlib")},3739:()=>{},9862:(e,t,r)=>{"use strict";r.r(t),r.d(t,{originalPathname:()=>T,patchFetch:()=>x,requestAsyncStorage:()=>f,routeModule:()=>c,serverHooks:()=>E,staticGenerationAsyncStorage:()=>l});var s={};r.r(s),r.d(s,{DELETE:()=>d,GET:()=>p});var i=r(9303),a=r(8716),n=r(670),o=r(7070),u=r(5748);async function p(e,{params:t}){try{let r=parseInt(t.id),s=await (0,u.FO)(r);if(!s)return o.NextResponse.json({error:"Запись не найдена"},{status:404});let{searchParams:i}=new URL(e.url);if("pdf"===i.get("download")&&s.pdf_data){let e=new Uint8Array(s.pdf_data);return new o.NextResponse(e,{headers:{"Content-Type":"application/pdf","Content-Disposition":`attachment; filename="${s.type}_${s.id}.pdf"`}})}let{pdf_data:a,...n}=s;return o.NextResponse.json({...n,hasPdf:!!a})}catch(e){return console.error("Get by ID error:",e),o.NextResponse.json({error:"Ошибка получения записи"},{status:500})}}async function d(e,{params:t}){try{let e=parseInt(t.id);if(!await (0,u.Jp)(e))return o.NextResponse.json({error:"Запись не найдена"},{status:404});return o.NextResponse.json({success:!0,message:"Запись удалена"})}catch(e){return console.error("Delete error:",e),o.NextResponse.json({error:"Ошибка удаления"},{status:500})}}let c=new i.AppRouteRouteModule({definition:{kind:a.x.APP_ROUTE,page:"/api/history/[id]/route",pathname:"/api/history/[id]",filename:"route",bundlePath:"app/api/history/[id]/route"},resolvedPagePath:"C:\\Users\\Mardin it\\Desktop\\crs\\student-ai-nextjs\\src\\app\\api\\history\\[id]\\route.ts",nextConfigOutput:"",userland:s}),{requestAsyncStorage:f,staticGenerationAsyncStorage:l,serverHooks:E}=c,T="/api/history/[id]/route";function x(){return(0,n.patchFetch)({serverHooks:E,staticGenerationAsyncStorage:l})}},5748:(e,t,r)=>{"use strict";r.d(t,{FO:()=>o,Jp:()=>u,s1:()=>n,vq:()=>a});var s=r(6923);async function i(){await (0,s.i6)`
     CREATE TABLE IF NOT EXISTS generations (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       type TEXT NOT NULL,
       topic TEXT NOT NULL,
       subject TEXT NOT NULL,
       pages INTEGER NOT NULL,
       additional_info TEXT,
       content TEXT NOT NULL,
-      pdf_data BLOB,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      pdf_data BYTEA,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
-  `),e.close()}()}};var t=require("../../../../webpack-runtime.js");t.C(e);var r=e=>t(t.s=e),n=t.X(0,[276,972],()=>r(9862));module.exports=n})();
+  `}async function a(e){await i();let t=e.pdfBuffer.toString("base64");return{id:(await (0,s.i6)`
+    INSERT INTO generations (type, topic, subject, pages, additional_info, content, pdf_data)
+    VALUES (
+      ${e.type},
+      ${e.topic},
+      ${e.subject},
+      ${e.pages},
+      ${e.additionalInfo||null},
+      ${e.content},
+      decode(${t}, 'base64')
+    )
+    RETURNING id
+  `).rows[0].id}}async function n(){return await i(),(await (0,s.i6)`
+    SELECT id, type, topic, subject, pages, additional_info, created_at
+    FROM generations 
+    ORDER BY created_at DESC 
+    LIMIT 50
+  `).rows}async function o(e){await i();let t=await (0,s.i6)`
+    SELECT id, type, topic, subject, pages, additional_info, content, 
+           encode(pdf_data, 'base64') as pdf_data, created_at
+    FROM generations 
+    WHERE id = ${e}
+  `;if(0===t.rows.length)return null;let r=t.rows[0];return{...r,pdf_data:r.pdf_data?Buffer.from(r.pdf_data,"base64"):null}}async function u(e){return await i(),((await (0,s.i6)`
+    DELETE FROM generations 
+    WHERE id = ${e}
+  `).rowCount??0)>0}}};var t=require("../../../../webpack-runtime.js");t.C(e);var r=e=>t(t.s=e),s=t.X(0,[276,972,923],()=>r(9862));module.exports=s})();
