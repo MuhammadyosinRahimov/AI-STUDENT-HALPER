@@ -4,7 +4,7 @@ import type { Language } from './i18n';
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 const model = genAI.getGenerativeModel({
-  model: 'gemini-flash-latest',
+  model: 'gemini-3-flash-preview',
   generationConfig: {
     temperature: 0.7,
     maxOutputTokens: 8192,
